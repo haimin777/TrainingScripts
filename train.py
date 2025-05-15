@@ -1,4 +1,5 @@
 import os
+import sys
 import pandas as pd
 import glob
 
@@ -17,7 +18,7 @@ from tensorflow.keras.callbacks import Callback
 import tensorflow.keras.backend as K
 
 
-def prepare_data(trn_df, tst_df, batch_size=32):
+def prepare_data(dataset_dir, trn_df, tst_df, batch_size=32):
 
 
     datagen_trn = ImageDataGenerator(
@@ -31,8 +32,8 @@ def prepare_data(trn_df, tst_df, batch_size=32):
         preprocessing_function=preprocess_input
     )
     train_gen = datagen_trn.flow_from_dataframe(
-        dataframe=trn_df[:1000],
-        directory='/content/drive/MyDrive',
+        dataframe=trn_df,
+        directory=dataset_dir,
         x_col='paths',
         y_col='label',
         target_size=(224, 224),
@@ -41,8 +42,8 @@ def prepare_data(trn_df, tst_df, batch_size=32):
         shuffle=True
     )
     test_gen = datagen_tst.flow_from_dataframe(
-        dataframe=tst_df[:500],
-        directory='/content/drive/MyDrive',
+        dataframe=tst_df,
+        directory=dataset_dir,
         x_col='paths',
         y_col='label',
         target_size=(224, 224),
@@ -102,7 +103,7 @@ def prepare_model(train_samples_num, num_epoch, batch_size):
 
 
 
-def main():
+def main(dataset_dir):
 
     trn_path = 'trn_exp-1.csv'
     tst_path = 'tst_exp-1.csv'
@@ -111,7 +112,7 @@ def main():
     trn_df = pd.read_csv(trn_path)
     tst_df = pd.read_csv(tst_path)
 
-    trn_gen, tst_gen = prepare_data(trn_df, tst_df, batch_size)
+    trn_gen, tst_gen = prepare_data(dataset_dir, trn_df, tst_df, batch_size)
 
     model = prepare_model(trn_df.shape[0], num_epoch, batch_size)
 
