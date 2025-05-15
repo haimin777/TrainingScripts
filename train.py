@@ -159,4 +159,4 @@ def main(dataset_dir):
 
 if __name__ == "__main__":
 
-    main()    
+    main(sys.argv[1])    
