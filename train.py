@@ -178,4 +178,4 @@ def main(dataset_dir, config_path):
 
 if __name__ == "__main__":
 
-    main(sys.argv[1])    
+    main(sys.argv[1], sys.argv[2])    
