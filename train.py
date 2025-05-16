@@ -12,7 +12,7 @@ import os
 import math
 import datetime
 from tensorflow.keras import layers, models
-from tensorflow.keras.applications import EfficientNetV2B0, EfficientNetV2B1
+from tensorflow.keras.applications import EfficientNetV2B0, EfficientNetV2B1, EfficientNetV2B2
 from tensorflow.keras.optimizers.schedules import CosineDecay
 from tensorflow.keras.callbacks import Callback
 import tensorflow.keras.backend as K
@@ -54,14 +54,22 @@ def prepare_data(dataset_dir, trn_df, tst_df, batch_size=32):
 
     return train_gen, test_gen
 
-def prepare_model(train_samples_num, num_epoch, batch_size):
+def prepare_model(train_samples_num, num_epoch, batch_size, img_size, model=0):
+    '''
+    model: 0 EfnrtB0
+    model: 1 EfnetB1
+    model: 2 EfnetB2
+    '''
 
-    
+    model_type = {0: EfficientNetV2B0,
+                  1: EfficientNetV2B1,
+                  2: EfficientNetV2B2}
     # Load EfficientNetB0 without top (no classifier head)
-    base_model = EfficientNetV2B0(
+    #base_model = EfficientNetV2B0(
+    base_model = model_type[model](    
         include_top=False,
         weights='imagenet',
-        input_shape=(224, 224, 3),
+        input_shape=(img_size, img_size, 3),
         pooling='avg'  # GlobalAveragePooling2D
     )
 
@@ -103,22 +111,33 @@ def prepare_model(train_samples_num, num_epoch, batch_size):
 
 
 
-def main(dataset_dir):
+def main(dataset_dir, config_path):
 
-    trn_path = 'trn_exp-1.csv'
-    tst_path = 'tst_exp-1.csv'
-    num_epoch = 20
-    batch_size = 32
+    with open(config_path) as f:
+
+        config = json.load(f)
+
+    trn_path = config["trn_csv"]
+    tst_path = config["tst_csv"]
+    num_epoch = config['epochs']
+    batch_size = config['batch_size']
+    img_size = config['img_size']
+    model_type = config['model']
     trn_df = pd.read_csv(trn_path)
     tst_df = pd.read_csv(tst_path)
 
     trn_gen, tst_gen = prepare_data(dataset_dir, trn_df, tst_df, batch_size)
 
-    model = prepare_model(trn_df.shape[0], num_epoch, batch_size)
+    model = prepare_model(trn_df.shape[0],
+                           num_epoch,
+                             batch_size,
+                             img_size,
+                             model_type
+                             )
 
     # Create folders
-    checkpoint_dir = "checkpoints/efficientnetb0"
-    log_dir = "logs/efficientnetb0/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    checkpoint_dir = "checkpoints/exper_"+os.path.basename(config_path)
+    log_dir = f"logs/exper_{os.path.basename(config_path)}/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
     os.makedirs(checkpoint_dir, exist_ok=True)
     os.makedirs(log_dir, exist_ok=True)

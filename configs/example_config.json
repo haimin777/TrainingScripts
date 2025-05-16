@@ -1,0 +1,8 @@
+{
+    "model": 1,
+    "trn_csv": "trn_1.csv",
+    "tst_csv": "tst_1.csv",
+    "batch_size": 32,
+    "img_size": 224,
+    "epochs": 50
+}
