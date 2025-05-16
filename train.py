@@ -146,7 +146,7 @@ def main(dataset_dir, config_path):
     checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
         filepath=os.path.join(checkpoint_dir, "model_epoch_{epoch:02d}_valacc_{val_accuracy:.2f}.weights.h5"),
         monitor='val_accuracy',
-        save_best_only=False,
+        save_best_only=True,
         save_weights_only=True,
         verbose=1
     )
