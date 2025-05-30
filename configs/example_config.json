@@ -1,8 +1,11 @@
 {
     "model": 1,
-    "trn_csv": "trn_1.csv",
-    "tst_csv": "tst_1.csv",
+    "crop": true,
+    "pad": 0.2,
+    "trn_csv": "C:/Users/haimi/debug/meta.csv",
+    "tst_csv": "C:/Users/haimi/debug/meta.csv",
     "batch_size": 32,
     "img_size": 224,
-    "epochs": 50
+    "epochs": 50,
+    "debug": true
 }

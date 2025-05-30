@@ -16,6 +16,7 @@ from tensorflow.keras.applications import EfficientNetV2B0, EfficientNetV2B1, Ef
 from tensorflow.keras.optimizers.schedules import CosineDecay
 from tensorflow.keras.callbacks import Callback
 import tensorflow.keras.backend as K
+from crop import get_dataset as crop_dataset
 
 
 def prepare_data(dataset_dir, trn_df, tst_df, batch_size=32):
@@ -123,10 +124,20 @@ def main(dataset_dir, config_path):
     batch_size = config['batch_size']
     img_size = config['img_size']
     model_type = config['model']
+    train_on_crop = config['crop']
+    pad = config['pad']
+    debug = config['debug']
     trn_df = pd.read_csv(trn_path)
     tst_df = pd.read_csv(tst_path)
+    if debug:
+        trn_df = trn_df[:500]
+        tst_df = tst_df[:100]
 
-    trn_gen, tst_gen = prepare_data(dataset_dir, trn_df, tst_df, batch_size)
+    if train_on_crop:
+        trn_gen = crop_dataset(trn_df, pad)
+        tst_gen = crop_dataset(tst_df, pad)
+    else:
+        trn_gen, tst_gen = prepare_data(dataset_dir, trn_df, tst_df, batch_size)
 
     model = prepare_model(trn_df.shape[0],
                            num_epoch,
