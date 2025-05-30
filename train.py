@@ -134,8 +134,8 @@ def main(dataset_dir, config_path):
         tst_df = tst_df[:100]
 
     if train_on_crop:
-        trn_gen = crop_dataset(trn_df, pad)
-        tst_gen = crop_dataset(tst_df, pad)
+        trn_gen = crop_dataset(trn_df, dataset_dir, pad)
+        tst_gen = crop_dataset(tst_df, dataset_dir, pad)
     else:
         trn_gen, tst_gen = prepare_data(dataset_dir, trn_df, tst_df, batch_size)
 

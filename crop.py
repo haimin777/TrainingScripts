@@ -58,9 +58,9 @@ def load_and_crop_image(image_path, bbox, label):
 
     return resized, label
 
-def get_dataset(df, pad=0.2):
+def get_dataset(df, root, pad=0.2):
     ## bboxes in format [x, y, w, h]
-
+    df['path'] = df['path'].apply(lambda x: os.path.join(root, x))
     image_paths = df['paths'].to_list()
     bboxes = df['bbox'].apply(lambda x: make_tuple(x)[0]['bbox']).to_list()
     padded_fn = partial(pad_bbox, pad=pad)
