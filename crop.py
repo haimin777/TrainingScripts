@@ -70,6 +70,7 @@ def get_dataset(df, root, pad=0.2):
 
     dataset = dataset.map(lambda path, box, label: load_and_crop_image(path, box, label))
     dataset = dataset.map(lambda img, label: augment_image(img, label))
+    dataset = dataset.apply(tf.data.experimental.ignore_errors())
 
     dataset = dataset.shuffle(True).batch(32)
 

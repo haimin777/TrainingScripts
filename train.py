@@ -23,8 +23,8 @@ def prepare_data(dataset_dir, trn_df, tst_df, batch_size=32):
 
 
     datagen_trn = ImageDataGenerator(
-        shear_range=0.3,
-        zoom_range=0.25,
+        #shear_range=0.3,
+        #zoom_range=0.25,
         horizontal_flip=True,
         preprocessing_function=preprocess_input
     )
