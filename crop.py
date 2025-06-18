@@ -55,6 +55,7 @@ def load_and_crop_image(image_path, bbox, label):
     # Crop
     cropped = image[xmin: xmin+w, ymin:ymin+h,:]
     resized = tf.image.resize(cropped, [224, 224])
+    resized /= 255
 
     return resized, label
 
