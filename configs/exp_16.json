@@ -1,0 +1,11 @@
+{
+    "model": 1,
+    "crop": true,
+    "pad": 0.2,
+    "trn_csv": "trn_exp-16_pinterest.csv",
+    "tst_csv": "tst_exp-1.csv",
+    "batch_size": 32,
+    "img_size": 224,
+    "epochs": 20,
+    "debug": true
+}
