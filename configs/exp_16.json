@@ -1,5 +1,5 @@
 {
-    "model": 1,
+    "model": 2,
     "crop": true,
     "pad": 0.2,
     "trn_csv": "trn_exp-16_pinterest.csv",
