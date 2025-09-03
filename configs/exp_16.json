@@ -7,5 +7,5 @@
     "batch_size": 32,
     "img_size": 224,
     "epochs": 20,
-    "debug": true
+    "debug": false
 }
