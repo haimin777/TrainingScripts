@@ -225,7 +225,7 @@ def main(dataset_dir, config_path):
                     checkpoint_callback,
                     tensorboard_callback,
                     LRSchedulerLogger(),
-                    image_logger
+                    #image_logger
                 ]
 )
 
