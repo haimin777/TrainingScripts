@@ -2,7 +2,7 @@ import os
 import sys
 import pandas as pd
 import json
-
+import matplotlib.pyplot as plt
 import tensorflow as tf
 import pandas as pd
 from tensorflow.keras.applications.efficientnet import preprocess_input
