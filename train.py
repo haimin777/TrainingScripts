@@ -5,6 +5,7 @@ import json
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import pandas as pd
+import io
 from tensorflow.keras.applications.efficientnet import preprocess_input
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import numpy as np
@@ -135,7 +136,7 @@ class ImageLogger(tf.keras.callbacks.Callback):
                     ax[0].set_title("Input")
                     ax[0].axis("off")
                     
-                    ax[1].imshow(preds[i].squeeze(), cmap="gray")
+                    ax[1].imshow(preds[i])
                     ax[1].set_title("Prediction")
                     ax[1].axis("off")
 
