@@ -24,7 +24,8 @@ def prepare_data(dataset_dir, trn_df, tst_df, batch_size=32):
 
     datagen_trn = ImageDataGenerator(
         #shear_range=0.3,
-        #zoom_range=0.25,
+        zoom_range=0.15,
+
         horizontal_flip=True,
         preprocessing_function=preprocess_input
     )
@@ -110,6 +111,44 @@ def prepare_model(train_samples_num, num_epoch, batch_size, img_size, model=0):
     return model
 
 
+class ImageLogger(tf.keras.callbacks.Callback):
+    def __init__(self, log_dir, data_generator, num_images=3):
+        super().__init__()
+        self.file_writer = tf.summary.create_file_writer(log_dir + '/images')
+        self.data_gen = data_generator
+        self.num_images = num_images
+
+    def on_epoch_end(self, epoch, logs=None):
+        # Only after first epoch
+        if epoch == 0:
+            # Get a batch
+            x_batch, y_batch = next(iter(self.data_gen))
+
+            # Run prediction
+            preds = self.model.predict(x_batch[:self.num_images])
+
+            # Convert to images for TensorBoard
+            with self.file_writer.as_default():
+                for i in range(self.num_images):
+                    fig, ax = plt.subplots(1, 2, figsize=(6,3))
+                    ax[0].imshow(x_batch[i].astype("uint8"))
+                    ax[0].set_title("Input")
+                    ax[0].axis("off")
+                    
+                    ax[1].imshow(preds[i].squeeze(), cmap="gray")
+                    ax[1].set_title("Prediction")
+                    ax[1].axis("off")
+
+                    # Convert figure to image
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png')
+                    plt.close(fig)
+                    buf.seek(0)
+                    image = tf.image.decode_png(buf.getvalue(), channels=4)
+                    image = tf.expand_dims(image, 0)  # add batch dimension
+                    
+                    # Write to TensorBoard
+                    tf.summary.image(f"Sample_{i}", image, step=epoch)
 
 
 def main(dataset_dir, config_path):
@@ -175,6 +214,8 @@ def main(dataset_dir, config_path):
 
     # TensorBoard callback
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    image_logger = ImageLogger(log_dir, tst_gen, num_images=3)
+
     history = model.fit(
                 trn_gen,
                 validation_data=tst_gen,
@@ -182,7 +223,8 @@ def main(dataset_dir, config_path):
                 callbacks=[
                     checkpoint_callback,
                     tensorboard_callback,
-                    LRSchedulerLogger()
+                    LRSchedulerLogger(),
+                    image_logger
                 ]
 )
 

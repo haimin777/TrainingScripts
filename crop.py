@@ -15,7 +15,7 @@ def random_zoom(image, zoom_range=0.25):
     image = tf.image.resize(image, [h, w])
     return image
 
-def augment_image(image, label, shear_range=0.3, zoom_range=0.25):
+def augment_image(image, label, shear_range=0.3, zoom_range=0.15):
     # Normalize image to float32
     image = tf.image.convert_image_dtype(image, tf.float32)
 
