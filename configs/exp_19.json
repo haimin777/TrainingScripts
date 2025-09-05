@@ -1,6 +1,6 @@
 {
     "model": 1,
-    "crop": true,
+    "crop": false,
     "pad": 0.2,
     "trn_csv": "data/trn_exp-17_pinterest.csv",
     "tst_csv": "data/tst_exp-1.csv",
