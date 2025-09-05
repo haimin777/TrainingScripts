@@ -151,6 +151,10 @@ class ImageLogger(tf.keras.callbacks.Callback):
                     # Write to TensorBoard
                     tf.summary.image(f"Sample_{i}", image, step=epoch)
 
+def find_last(ckpt_dir):
+    paths = glob.glob(os.path.join(p,'*h5'))
+    paths.sort()
+    return(paths[-1])
 
 def main(dataset_dir, config_path):
 
@@ -189,7 +193,12 @@ def main(dataset_dir, config_path):
     # Create folders
     checkpoint_dir = "checkpoints/exper_"+os.path.basename(config_path)
     log_dir = f"logs/exper_{os.path.basename(config_path)}/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    '''
+    if continue_training:
 
+        last_ckpt = find_last(checkpoint_dir)
+        model.load_weights(last_ckpt)
+    '''    
     os.makedirs(checkpoint_dir, exist_ok=True)
     os.makedirs(log_dir, exist_ok=True)
 
