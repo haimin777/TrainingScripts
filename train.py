@@ -8,7 +8,7 @@ import tensorflow as tf
 import pandas as pd
 import io
 #from tensorflow.keras.applications.efficientnet import preprocess_input
-from utils import preprocess_input
+from utils import preprocess_input, ImageLogger
 from utils import glare_then_preprocess
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import numpy as np
@@ -116,41 +116,6 @@ def prepare_model(train_samples_num, num_epoch, batch_size, img_size, model=0):
     return model
 
 
-class ImageLogger(tf.keras.callbacks.Callback):
-    def __init__(self, log_dir, data_generator, num_images=3):
-        super().__init__()
-        self.file_writer = tf.summary.create_file_writer(log_dir + '/images')
-        self.data_gen = data_generator
-        self.num_images = num_images
-
-    def on_epoch_end(self, epoch, logs=None):
-        # Only after first epoch
-        if epoch == 0:
-            # Get a batch
-            x_batch, y_batch = next(iter(self.data_gen))
-            #x_batch /= 255
-            # Run prediction
-            preds = self.model.predict(x_batch[:self.num_images])
-
-            # Convert to images for TensorBoard
-            with self.file_writer.as_default():
-                for i in range(self.num_images):
-                    fig, ax = plt.subplots(figsize=(6,3))
-                    #ax.imshow(x_batch[i].astype("uint8"))
-                    ax.imshow(x_batch[i])
-                    ax.set_title(f"gt: {y_batch[i]} pred: {preds[i]}")
-                    ax.axis("off")
-                    
-                    # Convert figure to image
-                    buf = io.BytesIO()
-                    plt.savefig(buf, format='png')
-                    plt.close(fig)
-                    buf.seek(0)
-                    image = tf.image.decode_png(buf.getvalue(), channels=4)
-                    image = tf.expand_dims(image, 0)  # add batch dimension
-                    
-                    # Write to TensorBoard
-                    tf.summary.image(f"Sample_{i}", image, step=epoch)
 
 def find_last(ckpt_dir):
     paths = glob.glob(os.path.join(p,'*h5'))
@@ -225,7 +190,7 @@ def main(dataset_dir, config_path):
 
     # TensorBoard callback
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
-    image_logger = ImageLogger(log_dir, trn_gen, num_images=12)
+    image_logger = ImageLogger(log_dir, trn_gen, tst_gen, num_images=12)
 
     history = model.fit(
                 trn_gen,

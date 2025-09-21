@@ -1,5 +1,50 @@
 import numpy as np
+import tensorflow as tf
+import io
+import matplotlib.pyplot as plt
 
+class ImageLogger(tf.keras.callbacks.Callback):
+    def __init__(self, log_dir, data_generator_trn, data_generator_tst, num_images=3):
+        super().__init__()
+        self.file_writer = tf.summary.create_file_writer(log_dir + '/images')
+        self.data_gen_trn = data_generator_trn
+        self.data_gen_tst = data_generator_tst
+        self.num_images = num_images
+
+    def on_epoch_end(self, epoch, logs=None):
+        # Only after first epoch
+        if epoch == 0:
+            # Get a batch
+            x_batch_trn, y_batch_trn = next(iter(self.data_gen_trn))
+            x_batch_tst, y_batch_tst = next(iter(self.data_gen_tst))
+            #x_batch /= 255
+            # Run prediction
+            preds_trn = self.model.predict(x_batch_trn[:self.num_images])
+            preds_tst = self.model.predict(x_batch_tst[:self.num_images])
+
+            # Convert to images for TensorBoard
+            with self.file_writer.as_default():
+                for i in range(self.num_images):
+                    fig, ax = plt.subplots(1, 2, figsize=(6,3))
+                    #ax.imshow(x_batch[i].astype("uint8"))
+                    ax[0].imshow(x_batch_trn[i])
+                    ax[0].set_title(f"gt: {y_batch_trn[i]} pred: {preds_trn[i]}")
+                    ax[0].axis("off")
+                    #TST
+                    ax[1].imshow(x_batch_tst[i])
+                    ax[1].set_title(f"gt tst: {y_batch_tst[i]} pred: {preds_tst[i]}")
+                    ax[1].axis("off")
+                    
+                    # Convert figure to image
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png')
+                    plt.close(fig)
+                    buf.seek(0)
+                    image = tf.image.decode_png(buf.getvalue(), channels=4)
+                    image = tf.expand_dims(image, 0)  # add batch dimension
+                    
+                    # Write to TensorBoard
+                    tf.summary.image(f"Sample_{i}", image, step=epoch)
 
 def _add_glare(x, p=0.9, max_alpha=0.6):
     """Add a simple lens-glare spot with a radial falloff.
