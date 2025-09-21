@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import pandas as pd
 import io
-#from tensorflow.keras.applications.efficientnet import preprocess_input
-from utils import preprocess_input, ImageLogger
+from tensorflow.keras.applications.efficientnet import preprocess_input
+from utils import ImageLogger
 from utils import glare_then_preprocess
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import numpy as np

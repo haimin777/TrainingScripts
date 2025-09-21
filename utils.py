@@ -27,11 +27,11 @@ class ImageLogger(tf.keras.callbacks.Callback):
                 for i in range(self.num_images):
                     fig, ax = plt.subplots(1, 2, figsize=(6,3))
                     #ax.imshow(x_batch[i].astype("uint8"))
-                    ax[0].imshow(x_batch_trn[i])
+                    ax[0].imshow(x_batch_trn[i]/255)
                     ax[0].set_title(f"gt: {y_batch_trn[i]} pred: {preds_trn[i]}")
                     ax[0].axis("off")
                     #TST
-                    ax[1].imshow(x_batch_tst[i])
+                    ax[1].imshow(x_batch_tst[i]/255)
                     ax[1].set_title(f"gt tst: {y_batch_tst[i]} pred: {preds_tst[i]}")
                     ax[1].axis("off")
                     
@@ -79,7 +79,7 @@ def _add_glare(x, p=0.9, max_alpha=0.6):
 
 def glare_then_preprocess(x):
     x = _add_glare(x, p=0.3, max_alpha=0.6)
-    return x/255  # your existing preprocessing
+    return x  # your existing preprocessing
 
 def preprocess_input(x):
-    return x/255  # your existing preprocessing
+    return x  # your existing preprocessing
