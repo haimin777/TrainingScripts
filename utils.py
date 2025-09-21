@@ -29,7 +29,7 @@ def _add_glare(x, p=0.9, max_alpha=0.6):
         glare = (255.0 * alpha * mask)[..., None]
 
     x += glare
-    #np.clip(x, 0, 255, out=x)
+    np.clip(x, 0, 255, out=x)
     return x
 
 def glare_then_preprocess(x):
