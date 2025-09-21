@@ -136,6 +136,7 @@ ENV/
 env.bak/
 venv.bak/
 weights/
+logs/
 
 # Spyder project settings
 .spyderproject

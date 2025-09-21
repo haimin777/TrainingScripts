@@ -1,12 +1,14 @@
 import os
-import sys
+import glob
 import pandas as pd
 import json
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import pandas as pd
 import io
-from tensorflow.keras.applications.efficientnet import preprocess_input
+#from tensorflow.keras.applications.efficientnet import preprocess_input
+from utils import preprocess_input
+from utils import glare_then_preprocess
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 import os
@@ -28,7 +30,8 @@ def prepare_data(dataset_dir, trn_df, tst_df, batch_size=32):
         zoom_range=0.15,
 
         horizontal_flip=True,
-        preprocessing_function=preprocess_input
+        #preprocessing_function=preprocess_input
+        preprocessing_function=glare_then_preprocess
     )
 
     datagen_tst = ImageDataGenerator(
@@ -124,22 +127,19 @@ class ImageLogger(tf.keras.callbacks.Callback):
         if epoch == 0:
             # Get a batch
             x_batch, y_batch = next(iter(self.data_gen))
-
+            #x_batch /= 255
             # Run prediction
             preds = self.model.predict(x_batch[:self.num_images])
 
             # Convert to images for TensorBoard
             with self.file_writer.as_default():
                 for i in range(self.num_images):
-                    fig, ax = plt.subplots(1, 2, figsize=(6,3))
-                    ax[0].imshow(x_batch[i].astype("uint8"))
-                    ax[0].set_title("Input")
-                    ax[0].axis("off")
+                    fig, ax = plt.subplots(figsize=(6,3))
+                    #ax.imshow(x_batch[i].astype("uint8"))
+                    ax.imshow(x_batch[i])
+                    ax.set_title(f"gt: {y_batch[i]} pred: {preds[i]}")
+                    ax.axis("off")
                     
-                    ax[1].imshow(preds[i])
-                    ax[1].set_title("Prediction")
-                    ax[1].axis("off")
-
                     # Convert figure to image
                     buf = io.BytesIO()
                     plt.savefig(buf, format='png')
@@ -174,7 +174,7 @@ def main(dataset_dir, config_path):
     trn_df = pd.read_csv(trn_path)
     tst_df = pd.read_csv(tst_path)
     if debug:
-        trn_df = trn_df[:500]
+        trn_df = trn_df[:200]
         tst_df = tst_df[:100]
 
     if train_on_crop:
@@ -224,7 +224,7 @@ def main(dataset_dir, config_path):
 
     # TensorBoard callback
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
-    image_logger = ImageLogger(log_dir, tst_gen, num_images=3)
+    image_logger = ImageLogger(log_dir, trn_gen, num_images=12)
 
     history = model.fit(
                 trn_gen,
@@ -234,7 +234,7 @@ def main(dataset_dir, config_path):
                     checkpoint_callback,
                     tensorboard_callback,
                     LRSchedulerLogger(),
-                    #image_logger
+                    image_logger
                 ]
 )
 
@@ -242,3 +242,4 @@ def main(dataset_dir, config_path):
 if __name__ == "__main__":
 
     main(sys.argv[1], sys.argv[2])    
+    #main("C:\\Work\\debug_data", ".\\configs\\debug_local.json" )
