@@ -78,7 +78,7 @@ def _add_glare(x, p=0.9, max_alpha=0.6):
     return x
 
 def glare_then_preprocess(x):
-    x = _add_glare(x, p=0.3, max_alpha=0.6)
+    x = _add_glare(x, p=0.4, max_alpha=0.7)
     return x  # your existing preprocessing
 
 def preprocess_input(x):
