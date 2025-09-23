@@ -77,8 +77,19 @@ def _add_glare(x, p=0.9, max_alpha=0.6):
     np.clip(x, 0, 255, out=x)
     return x
 
+def random_contrast_np(x, lower=0.8, upper=1.25):
+    """Contrast jitter (NumPy). x expected in [0,255], shape (H,W,C)."""
+    x = x.astype(np.float32, copy=True)
+    factor = np.random.uniform(lower, upper)
+    mean = np.mean(x, axis=(0, 1), keepdims=True)
+    x = (x - mean) * factor + mean
+    np.clip(x, 0, 255, out=x)
+    return x
+
 def glare_then_preprocess(x):
     x = _add_glare(x, p=0.4, max_alpha=0.7)
+    x = random_contrast_np(x, lower=0.8, upper=1.25)
+
     return x  # your existing preprocessing
 
 def preprocess_input(x):

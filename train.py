@@ -31,6 +31,7 @@ def prepare_data(dataset_dir, trn_df, tst_df, batch_size=32):
         zoom_range=0.15,
 
         horizontal_flip=True,
+        brightness_range=(0.8, 1.2),
         #preprocessing_function=preprocess_input
         preprocessing_function=glare_then_preprocess
     )
