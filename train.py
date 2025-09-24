@@ -108,7 +108,9 @@ def prepare_model(train_samples_num, num_epoch, batch_size, img_size, model=0):
         alpha=alpha
     ) 
     
-    optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
+    #optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
+    optimizer = tf.keras.optimizers.SGD(learning_rate=lr_schedule, momentum=0.01)
+
 
 
     # Compile (example)

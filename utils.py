@@ -87,8 +87,8 @@ def random_contrast_np(x, lower=0.8, upper=1.25):
     return x
 
 def glare_then_preprocess(x):
-    x = _add_glare(x, p=0.4, max_alpha=0.7)
-    x = random_contrast_np(x, lower=0.8, upper=1.25)
+    x = _add_glare(x, p=0.3, max_alpha=0.6)
+    #x = random_contrast_np(x, lower=0.8, upper=1.25)
 
     return x  # your existing preprocessing
 
