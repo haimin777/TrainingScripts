@@ -94,7 +94,7 @@ def prepare_model(train_samples_num, num_epoch, batch_size, img_size, model=0):
     # Create final model
     model = models.Model(inputs=base_model.input, outputs=output)
 
-    initial_learning_rate = 0.001
+    initial_learning_rate = 0.01
     
     #decay_steps = (num_samples // batch_size) * num_epochs
 
