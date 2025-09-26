@@ -16,7 +16,7 @@ import os
 import math
 import datetime
 from tensorflow.keras import layers, models
-from tensorflow.keras.applications import EfficientNetV2B0, EfficientNetV2B1, EfficientNetV2B2
+from tensorflow.keras.applications import EfficientNetV2B0, EfficientNetV2B1, EfficientNetV2B2, MobileNetV3Small
 from tensorflow.keras.optimizers.schedules import CosineDecay
 from tensorflow.keras.callbacks import Callback
 import tensorflow.keras.backend as K
@@ -67,11 +67,13 @@ def prepare_model(train_samples_num, num_epoch, batch_size, img_size, model=0):
     model: 0 EfnrtB0
     model: 1 EfnetB1
     model: 2 EfnetB2
+    model: 4 MobileNetV3Small
     '''
 
     model_type = {0: EfficientNetV2B0,
                   1: EfficientNetV2B1,
-                  2: EfficientNetV2B2}
+                  2: EfficientNetV2B2,
+                  4: MobileNetV3Small}
     # Load EfficientNetB0 without top (no classifier head)
     #base_model = EfficientNetV2B0(
     base_model = model_type[model](    
@@ -108,8 +110,8 @@ def prepare_model(train_samples_num, num_epoch, batch_size, img_size, model=0):
         alpha=alpha
     ) 
     
-    #optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
-    optimizer = tf.keras.optimizers.SGD(learning_rate=lr_schedule, momentum=0.01)
+    optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
+    #optimizer = tf.keras.optimizers.SGD(learning_rate=lr_schedule, momentum=0.01)
 
 
 
