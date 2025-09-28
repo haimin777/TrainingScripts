@@ -1,5 +1,5 @@
 {
-    "model": ,
+    "model": 0,
     "crop": false,
     "pad": 0.2,
     "trn_csv": "data/trn_exp-17_pinterest.csv",
