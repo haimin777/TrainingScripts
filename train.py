@@ -109,8 +109,15 @@ def prepare_model(train_samples_num, num_epoch, batch_size, img_size, model=0):
         decay_steps=decay_steps,
         alpha=alpha
     ) 
+    lr_schedule_2 = tf.keras.optimizers.schedules.CosineDecayRestarts(
+    initial_learning_rate=initial_learning_rate,
+    first_decay_steps=train_samples_num * 2,  # cycles every ~2 epochs
+    t_mul=2.0,                           # cycle length multiplier
+    m_mul=1.0,                           # LR amplitude multiplier per restart
+    alpha=0.0                            # min LR as fraction of initial
+)
     
-    optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
+    optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule_2)
     #optimizer = tf.keras.optimizers.SGD(learning_rate=lr_schedule, momentum=0.01)
 
 
