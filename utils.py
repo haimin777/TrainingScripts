@@ -2,6 +2,7 @@ import numpy as np
 import tensorflow as tf
 import io
 import matplotlib.pyplot as plt
+import cv2
 
 class ImageLogger(tf.keras.callbacks.Callback):
     def __init__(self, log_dir, data_generator_trn, data_generator_tst, num_images=3):
@@ -76,6 +77,16 @@ def _add_glare(x, p=0.9, max_alpha=0.6):
     x += glare
     np.clip(x, 0, 255, out=x)
     return x
+
+def random_gaussian_blur(x, p=0.3, k_choices=(3,5,7), sigma_range=(0.6, 1.6)):
+        if np.random.rand() > p: 
+            return x
+        x = x.astype(np.float32, copy=True)
+        k = int(np.random.choice(k_choices))
+        if k % 2 == 0:  # must be odd
+            k += 1
+        sigma = np.random.uniform(*sigma_range)
+        return cv2.GaussianBlur(x, (k, k), sigmaX=sigma)
 
 def random_contrast_np(x, lower=0.8, upper=1.25):
     """Contrast jitter (NumPy). x expected in [0,255], shape (H,W,C)."""
