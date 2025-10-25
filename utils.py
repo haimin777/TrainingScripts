@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 import io
 import matplotlib.pyplot as plt
-import cv2
+#import cv2
 
 class ImageLogger(tf.keras.callbacks.Callback):
     def __init__(self, log_dir, data_generator_trn, data_generator_tst, num_images=3):
