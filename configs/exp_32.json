@@ -2,7 +2,7 @@
     "model": 0,
     "crop": false,
     "pad": 0.2,
-    "trn_csv": "data\trn_exp-33_pinterest_whatsapp.csv",
+    "trn_csv": "data/trn_exp-33_pinterest_whatsapp.csv",
     "tst_csv": "data/tst_exp-1.csv",
     "batch_size": 32,
     "img_size": 224,
