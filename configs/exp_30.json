@@ -8,5 +8,5 @@
     "img_size": 224,
     "epochs": 30,
     "debug": false,
-    "comment": "decrease glare to 0.3, 0.6 no brightnness, Adam, init_lr 0.0001"
+    "comment": "decrease glare to 0.3, 0.6 no brightnness, Adam, init_lr 0.0001, cycle LR"
 }
